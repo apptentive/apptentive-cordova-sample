@@ -19,24 +19,21 @@
 var app = {
     // Application Constructor
     initialize: function () {
-        this.bindEvents();
+        document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
     },
-    // Bind Event Listeners
-    //
-    // Bind any events that are required on startup. Common events are:
-    // 'load', 'deviceready', 'offline', and 'online'.
-    bindEvents: function () {
-        document.addEventListener('deviceready', this.onDeviceReady, false);
-    },
+
     // deviceready Event Handler
     //
-    // The scope of 'this' is the event. In order to call the 'receivedEvent'
-    // function, we must explicitly call 'app.receivedEvent(...);'
+    // Bind any cordova events here. Common events are:
+    // 'pause', 'resume', etc.
     onDeviceReady: function () {
-        Apptentive.deviceReady(app.successLogger, app.errorAlert);
-        app.deviceReady('deviceready');
-        app.addUnreadMessagesListener(app.unreadMessagesListener);
+        this.receivedEvent('deviceready');
+
+        // initializing Apptentive
+        Apptentive.deviceReady(this.successLogger, this.errorAlert);
+        Apptentive.addUnreadMessagesListener(this.unreadMessagesListener, this.errorAlert);
     },
+
     // Update DOM on a Received Event
     receivedEvent: function (id) {
         var parentElement = document.getElementById(id);
@@ -48,8 +45,9 @@ var app = {
 
         console.log('Received Event: ' + id);
     },
+
+    // Unread Message Listeners
     unreadMessagesListener: function (unreadMessages) {
-        console.log("UnreadMessages: " + unreadMessages);
         var parentElement = document.getElementById("unreadMessages");
         var listeningElement = parentElement.querySelector('.listening');
         var receivedElement = parentElement.querySelector('.received');
@@ -58,17 +56,19 @@ var app = {
         receivedElement.setAttribute('style', 'display:block;');
         receivedElement.firstElementChild.innerHTML = unreadMessages;
     },
-    successLogger: function (arg) {
-        console.log("success(): " + arg);
+
+    // Engagement
+    engage: function (event) {
+        Apptentive.engage(app.successAlert, app.errorAlert, event);
     },
-    successAlert: function (arg) {
-        console.log("success(): " + arg);
-        alert("Success: \"" + arg + "\"");
+    engageWithCustomData: function (event, customData) {
+        Apptentive.engage(app.successAlert, app.errorAlert, event, customData);
     },
-    errorAlert: function (arg) {
-        console.log("error(): " + arg);
-        alert("Error: \"" + arg + "\"");
+    canShowInteraction: function (eventName) {
+        Apptentive.canShowInteraction(app.successAlert, app.errorAlert, eventName);
     },
+
+    // Message Center
     showMessageCenter: function () {
         Apptentive.showMessageCenter(app.successLogger, app.errorAlert);
     },
@@ -78,23 +78,16 @@ var app = {
     showMessageCenterWithCustomData: function (customData) {
         Apptentive.showMessageCenter(app.successLogger, app.errorAlert, customData);
     },
+    getUnreadMessageCount: function () {
+        Apptentive.getUnreadMessageCount(app.successAlert, app.errorAlert);
+    },
+
+    // Custom Data
     addCustomDeviceData: function (key, value) {
         Apptentive.addCustomDeviceData(app.successAlert, app.errorAlert, key, value);
     },
     addCustomPersonData: function (key, value) {
         Apptentive.addCustomPersonData(app.successAlert, app.errorAlert, key, value);
-    },
-    engage: function (event) {
-        Apptentive.engage(app.successAlert, app.errorAlert, event);
-    },
-    engageWithCustomData: function (event, customData) {
-        Apptentive.engage(app.successAlert, app.errorAlert, event, customData);
-    },
-    getUnreadMessageCount: function () {
-        Apptentive.getUnreadMessageCount(app.successAlert, app.errorAlert);
-    },
-    putRatingProviderArg: function (key, value) {
-        Apptentive.putRatingProviderArg(app.successAlert, app.errorAlert, key, value);
     },
     removeCustomDeviceData: function (key) {
         Apptentive.removeCustomDeviceData(app.successAlert, app.errorAlert, key);
@@ -102,6 +95,8 @@ var app = {
     removeCustomPersonData: function (key) {
         Apptentive.removeCustomPersonData(app.successAlert, app.errorAlert, key);
     },
+
+    // User Identity
     getPersonEmail: function () {
         Apptentive.getPersonEmail(app.successAlert, app.errorAlert);
     },
@@ -114,19 +109,31 @@ var app = {
     setPersonName: function (name) {
         Apptentive.setPersonName(app.successAlert, app.errorAlert, name);
     },
-    setRatingProvider: function (providerName) {
-        Apptentive.setRatingProvider(app.successAlert, app.errorAlert, providerName);
-    },
-    canShowInteraction: function (eventName) {
-        Apptentive.canShowInteraction(app.successAlert, app.errorAlert, eventName);
-    },
-    addUnreadMessagesListener: function (unreadMessageslistener) {
-        Apptentive.addUnreadMessagesListener(unreadMessageslistener, app.errorAlert);
-    },
+
+    // Authentication
     login: function (token) {
         Apptentive.login(app.successAlert, app.errorAlert, token);
     },
     logout: function () {
         Apptentive.logout(app.successAlert, app.errorAlert);
-    }
+    },
+
+    // Rating Provider
+    putRatingProviderArg: function (key, value) {
+        Apptentive.putRatingProviderArg(app.successAlert, app.errorAlert, key, value);
+    },
+    setRatingProvider: function (providerName) {
+        Apptentive.setRatingProvider(app.successAlert, app.errorAlert, providerName);
+    },
+
+    // Helpers
+    successLogger: function (arg) {
+        console.log("success: " + arg);
+    },
+    errorAlert: function (arg) {
+        console.log("error: " + arg);
+        alert("Error: \"" + arg + "\"");
+    },
 };
+
+app.initialize();
