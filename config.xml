@@ -4,9 +4,10 @@
     <description>
         A sample Apache Cordova application that responds to the deviceready event.
     </description>
-    <author email="dev@cordova.apache.org" href="http://cordova.io">
-        Apache Cordova Team
+    <author email="support@apptentive.com" href="mailto:support@apptentive.com">
+        Apptentives
     </author>
+    <preference name="android-targetSdkVersion" value="28"/>
     <content src="index.html" />
     <plugin name="cordova-plugin-whitelist" spec="1" />
     <access origin="*" />
