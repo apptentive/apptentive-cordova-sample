@@ -10,7 +10,7 @@
   ```
 - Add `apptentive-cordova` plugin:
   ```
-  cordova plugin add apptentive-cordova@5.0.0 \
+  cordova plugin add apptentive-cordova \
   	--variable ANDROID_APP_KEY="YOUR_ANDROID_KEY" \
   	--variable ANDROID_APP_SIGNATURE="YOUR_ANDROID_SIGNATURE" \
   	--variable IOS_APP_KEY="YOUR_IOS_KEY" \
